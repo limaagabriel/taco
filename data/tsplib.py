@@ -8,7 +8,8 @@ from data.distance import DistanceFactory
 class TSPLIBLoader(object):
     def __init__(self, path):
         self.__data = TSPLIBLoader.__load(path)
-        print(self.__data)
+        self.__distance = DistanceFactory.get(self.weight_type)
+        self.__matrix = self.__build_adjacency_matrix()
 
     @property
     def name(self):
@@ -30,8 +31,9 @@ class TSPLIBLoader(object):
     def weight_type(self):
         return self.__data['EDGE_WEIGHT_TYPE']
 
-    def get(self, idx):
-        return np.array(self.__data['NODE_COORD_SECTION'][str(idx)])
+    @property
+    def matrix(self):
+        return self.__matrix.copy()
 
     @staticmethod
     def __load(path):
@@ -63,23 +65,42 @@ class TSPLIBLoader(object):
     @staticmethod
     def __plot_solution(coords, solutions):
         for solution in solutions:
+            for i in range(len(solution)):
+                solution[i] = solution[i] - 1
             plt.plot(coords[solution, 0], coords[solution, 1])
+
+    def __build_adjacency_matrix(self):
+        n = self.dimension
+        matrix = np.zeros((n + 1, n + 1))
+
+        for i in range(1, n + 1):
+            for j in range(1, n + 1):
+                matrix[i, j] = self.weight(i, j)
+        return matrix
+
+    def __getitem__(self, idx):
+        return np.array(self.__data['NODE_COORD_SECTION'][str(idx)])
+
+    def __len__(self):
+        return self.dimension
+
+    @property
+    def nodes(self):
+        return list(range(1, self.dimension + 1))
 
     def plot(self, solutions=None):
         coords = np.zeros((self.dimension, 2))
         for i in range(1, self.dimension + 1):
-            coords[i - 1, :] = self.get(i)
+            coords[i - 1, :] = self[i]
 
-        self.__plot_cities(coords)
         if solutions is not None:
             self.__plot_solution(coords, solutions)
+        self.__plot_cities(coords)
 
-        plt.title('{} ({})'.format(self.name, self.comment))
+        plt.title('{} - {}'.format(self.name, self.comment))
         plt.show()
 
     def weight(self, i, j):
-        a = self.get(i)
-        b = self.get(j)
-
-        distance_method = DistanceFactory.get(self.weight_type)
-        return distance_method(a, b)
+        a = self[i]
+        b = self[j]
+        return self.__distance(a, b)
