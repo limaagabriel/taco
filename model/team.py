@@ -4,12 +4,13 @@ from model.ant import Ant
 
 
 class AntTeam(object):
-    def __init__(self, team_size, initializer):
+    def __init__(self, team_size, initializer, evaluation):
         self.__team_size = team_size
 
         self.__taboo = []
         self.__solution = []
         self.__evaluation = sys.maxsize
+        self.__evaluation_criterion = evaluation
         self.__ants = [Ant(initializer) for _ in range(team_size)]
 
     @property
@@ -29,12 +30,6 @@ class AntTeam(object):
             current_state = state
 
         return distance
-
-    def __evaluate_criterion(self, loader):
-        distances = np.zeros(self.__team_size)
-        for i in range(self.__team_size):
-            distances[i] = self.__distance_of(self.__solution[i], loader)
-        return (distances ** 2).sum()
 
     def __go_back(self, initial_states):
         for idx, state in enumerate(initial_states):
@@ -80,4 +75,4 @@ class AntTeam(object):
 
         self.__go_back(initial_states)
         self.__solution = list(map(lambda x: x.solution, self.__ants))
-        self.__evaluation = self.__evaluate_criterion(loader)
+        self.__evaluation = self.__evaluation_criterion(loader, self.__solution)

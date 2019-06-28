@@ -4,7 +4,7 @@ from model.team import AntTeam
 
 
 class TeamAntColonyOptimization(object):
-    def __init__(self, n_teams, team_size, initializer, rho=0.1, q0=0.9, alpha=1, beta=2):
+    def __init__(self, n_teams, team_size, initializer, evaluation, rho=0.1, q0=0.9, alpha=1, beta=2):
         self.__q0 = q0
         self.__rho = rho
         self.__beta = beta
@@ -12,7 +12,7 @@ class TeamAntColonyOptimization(object):
         self.__n_teams = n_teams
         self.__best_solution = []
         self.__best_evaluation = sys.maxsize
-        self.__teams = [AntTeam(team_size, initializer) for _ in range(n_teams)]
+        self.__teams = [AntTeam(team_size, initializer, evaluation) for _ in range(n_teams)]
 
     def optimize(self, loader, stop_criterion):
         min_p = 1e-4
