@@ -16,4 +16,3 @@ taco = TeamAntColonyOptimization(n_teams, team_size, initializer, evaluation)
 solutions, score = taco.optimize(loader, stop_criterion)
 loader.plot(solutions=solutions)
 print(score)
-
