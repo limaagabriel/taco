@@ -63,7 +63,7 @@ class AntTeam(object):
             return ant, next_state
         return self.__find_moving_ant(another_ant_found[0], transition_params)
 
-    def build_solution(self, loader, q0, alpha, beta, trails):
+    def build_solution(self, loader, q0, alpha, beta, trails, local_search):
         for ant in self.__ants:
             ant.replace()
 
@@ -83,4 +83,8 @@ class AntTeam(object):
 
         self.__go_back(self.__initial_states)
         self.__solution = list(map(lambda x: x.solution, self.__ants))
+        if local_search is not None:
+            def evaluation(x):
+                return self.__evaluation_criterion(loader, x)
+            self.__solution = local_search(self.__solution, evaluation)
         self.__evaluation = self.__evaluation_criterion(loader, self.__solution)

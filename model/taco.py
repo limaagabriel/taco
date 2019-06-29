@@ -14,13 +14,13 @@ class TeamAntColonyOptimization(object):
         self.__best_evaluation = sys.maxsize
         self.__teams = [AntTeam(team_size, initializer, evaluation) for _ in range(n_teams)]
 
-    def optimize(self, loader, stop_criterion):
+    def optimize(self, loader, stop_criterion, local_search=None):
         min_p = 1e-4
         n = loader.dimension + 1
         pheromone_trails = np.ones((n, n))
 
         while not stop_criterion(self.__best_evaluation):
-            self.__build_solutions(loader, pheromone_trails)
+            self.__build_solutions(loader, pheromone_trails, local_search)
             self.__update_best_solution()
 
             self.__local_pheromone_update(pheromone_trails)
@@ -29,9 +29,9 @@ class TeamAntColonyOptimization(object):
 
         return self.__best_solution, self.__best_evaluation
 
-    def __build_solutions(self, loader, trails):
+    def __build_solutions(self, loader, trails, local_search):
         for team in self.__teams:
-            team.build_solution(loader, self.__q0, self.__alpha, self.__beta, trails)
+            team.build_solution(loader, self.__q0, self.__alpha, self.__beta, trails, local_search)
 
     def __update_best_solution(self):
         for team in self.__teams:

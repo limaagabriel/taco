@@ -30,9 +30,6 @@ class Ant(object):
         self.__solution = [self.__current_state]
 
     def state_transition_rule(self, loader, neighborhood, q0, alpha, beta, trails):
-        if len(neighborhood) == 1:
-            return neighborhood[0]
-
         if np.random.uniform(0, 1) <= q0:
             return self.__exploit(loader, neighborhood, alpha, beta, trails)
         return self.__explore(loader, neighborhood, alpha, beta, trails)
