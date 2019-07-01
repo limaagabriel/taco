@@ -88,7 +88,7 @@ class TSPLIBLoader(object):
     def nodes(self):
         return list(range(1, self.dimension + 1))
 
-    def plot(self, solutions=None):
+    def plot(self, path, solutions=None):
         coords = np.zeros((self.dimension, 2))
         for i in range(1, self.dimension + 1):
             coords[i - 1, :] = self[i]
@@ -98,7 +98,9 @@ class TSPLIBLoader(object):
         self.__plot_cities(coords)
 
         plt.title('{} - {}'.format(self.name, self.comment))
-        plt.show()
+        plt.savefig(path)
+        plt.clf()
+        plt.close()
 
     def weight(self, i, j):
         a = self[i]
