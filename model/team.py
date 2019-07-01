@@ -46,7 +46,7 @@ class AntTeam(object):
     def __find_neighborhood(self):
         return list(filter(lambda x: x not in self.__taboo, self.__loader.nodes))
 
-    def __find_moving_ant(self, ant, transition_params):
+    def __find_moving_ant(self, ant, transition_params, depth=5):
         another_ant_found = None
         next_state = ant.state_transition_rule(*transition_params)
 
@@ -61,7 +61,9 @@ class AntTeam(object):
 
         if another_ant_found is None:
             return ant, next_state
-        return self.__find_moving_ant(another_ant_found[0], transition_params)
+        if depth <= 0:
+            return another_ant_found[0], next_state
+        return self.__find_moving_ant(another_ant_found[0], transition_params, depth - 1)
 
     def build_solution(self, loader, q0, alpha, beta, trails, local_search):
         for ant in self.__ants:

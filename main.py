@@ -6,7 +6,7 @@ from model import TeamAntColonyOptimization
 from model.local_search import K2OptLocalSearch
 
 n_teams = 10
-team_size = 2
+team_size = 4
 
 evaluation = Evaluation.minmax()
 initializer = Initializer.fixed_state(1)
