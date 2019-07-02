@@ -10,7 +10,7 @@ class LocalSearchMethod(ABC):
         pass
 
 
-class SimulatedAnnealingLocalSearch(LocalSearchMethod):
+class SimulatedAnnealing(LocalSearchMethod):
     class __Annealer(Annealer):
         def __init__(self, state, evaluation):
             self.evaluation = evaluation
@@ -28,10 +28,10 @@ class SimulatedAnnealingLocalSearch(LocalSearchMethod):
             return self.evaluation(self.state)
 
     def __call__(self, solutions, evaluation):
-        return SimulatedAnnealingLocalSearch.__Annealer(solutions, evaluation).anneal()[0]
+        return SimulatedAnnealing.__Annealer(solutions, evaluation).anneal()[0]
 
 
-class K2OptLocalSearch(LocalSearchMethod):
+class K2Opt(LocalSearchMethod):
     @staticmethod
     def __swap(solution, i, j):
         new_solution = solution[:]
@@ -61,3 +61,24 @@ class K2OptLocalSearch(LocalSearchMethod):
                 solution = best
             solutions[idx] = best
         return solutions
+
+
+class LocalSearchFactory(object):
+    @staticmethod
+    def __list_methods():
+        return LocalSearchMethod.__subclasses__()
+
+    @staticmethod
+    def choices():
+        return list(map(lambda x: x.__name__, LocalSearchFactory.__list_methods()))
+        
+    @staticmethod
+    def build(name=None):
+        if name is None:
+            return None
+
+        methods = LocalSearchFactory.__list_methods()
+        method = list(filter(lambda x: name == x.__name__,  methods))
+        if len(method) == 0:
+            raise ValueError('A local search strategy named \'{}\' is not available yet.')
+        return method[0]()
