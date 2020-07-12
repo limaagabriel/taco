@@ -19,10 +19,14 @@ Thereby, all ants contained in the initial population iteratively constructs a c
 TACO is pretty similar to ACS in every aspect. The main difference between these two algorithms is the agent definition. Every agent in TACO is a team of *m* ACS ants. Each team constructs a candidate solution iteratively. Also, it deposits pheromone as a single ant would do. However, each agent inside a team is instructed to build disjoint paths to solve *mTSP*-like problems (find multiple tracks that, combined, cover every node in a graph). TACO is essentially ACS when *m = 1*, and it should encounter only one route that includes all graph nodes. Therefore, TACO is said to be an ACS generalization.
 
 The state transition rule is slightly modified to enable collective work among ants. While there are unvisited nodes, the algorithm designs an ant *T* to move based on its path length (the ant with the shortest path). It chooses the next state *j* based on the ACS state transition rule. Then, to avoid sub-optimal movements, the algorithm checks if there is another ant *P* which can move to *j* and finish its displacement with a shorter path than *T*. If it meets this condition, it selects *P* as the current moving ant, and it should move to another state based on the ACS state transition rule. If not, *T* moves to *j*.
+
 ## Usage
 
-```python main.py problems/eil51.tsp```
+For now, it only provides a CLI interface for reading TSPLIB files.
 
-It supports TSPLIB files. If you have any graph definition in this format, you can change `problems/eil51.tsp` to point to your file.
+```
+pip install requirements.txt
+python main.py <path-to-your-tsplib-file>
+```
 
 To get help about other available parameters, invoke the help page by running `python main.py --help`
